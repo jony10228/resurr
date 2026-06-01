@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -15,68 +15,149 @@ const prefersReduced =
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-const glowAnim = prefersReduced
-  ? {}
-  : {
-      animate: {
-        boxShadow: [
-          '0 0 8px rgba(59,130,246,0.2)',
-          '0 0 20px rgba(59,130,246,0.5)',
-          '0 0 8px rgba(59,130,246,0.2)',
-        ],
-      },
-      transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-    }
-
-function WebDesignBtn({ fullWidth = false, size = 'sm', onClick }: { fullWidth?: boolean; size?: 'sm' | 'md'; onClick?: () => void }) {
+function WebDesignBtn({
+  fullWidth = false,
+  size = 'sm',
+  showTooltip = false,
+  onClick,
+}: {
+  fullWidth?: boolean
+  size?: 'sm' | 'md'
+  showTooltip?: boolean
+  onClick?: () => void
+}) {
   const height = size === 'md' ? 44 : 36
   const px     = size === 'md' ? 24 : 16
 
+  const [hovered, setHovered] = useState(false)
+  const shineRef = useRef<HTMLSpanElement>(null)
+
+  /* Accelerate shine on hover */
+  const onMouseEnter = () => {
+    setHovered(true)
+    if (shineRef.current) shineRef.current.style.animationDuration = '1.5s'
+  }
+  const onMouseLeave = () => {
+    setHovered(false)
+    if (shineRef.current) shineRef.current.style.animationDuration = '3s'
+  }
+
+  const glowShadow = hovered
+    ? ['0 0 8px rgba(59,130,246,0.3)', '0 0 18px rgba(59,130,246,0.45)', '0 0 8px rgba(59,130,246,0.3)']
+    : ['0 0 4px rgba(59,130,246,0.1)', '0 0 12px rgba(59,130,246,0.25)', '0 0 4px rgba(59,130,246,0.1)']
+
   return (
-    <motion.div
-      whileHover={{ scale: 1.04 }}
-      whileTap={{ scale: 0.97 }}
-      {...glowAnim}
-      style={{ borderRadius: 10, display: 'inline-flex', width: fullWidth ? '100%' : undefined }}
-    >
-      <Link
-        to="/web-design"
-        onClick={onClick}
-        className="inline-flex font-sans font-semibold text-[13px] text-white"
-        style={{
-          height,
-          paddingLeft: px,
-          paddingRight: px,
-          borderRadius: 10,
-          background: 'transparent',
-          border: '1px solid rgba(59,130,246,0.6)',
-          position: 'relative',
-          overflow: 'hidden',
-          width: fullWidth ? '100%' : undefined,
-          justifyContent: fullWidth ? 'center' : undefined,
-        }}
+    <div style={{ position: 'relative', display: 'inline-flex', width: fullWidth ? '100%' : undefined }}>
+      <motion.div
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        whileHover={prefersReduced ? {} : { y: -1 }}
+        whileTap={{ scale: 0.97 }}
+        animate={prefersReduced ? {} : { boxShadow: glowShadow }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
+        style={{ borderRadius: 10, display: 'inline-flex', width: fullWidth ? '100%' : undefined }}
       >
-        {/* Shine border — borde de luz que recorre el contorno */}
-        {!prefersReduced && (
-          <span
-            className="pointer-events-none absolute inset-0 rounded-[inherit]"
-            style={{
-              padding: '1px',
-              background: 'radial-gradient(transparent, transparent, #60A5FA, #93C5FD, transparent, transparent)',
-              backgroundSize: '300% 300%',
-              animation: 'shine 3s linear infinite',
-              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-              WebkitMaskComposite: 'xor',
-              maskComposite: 'exclude',
-            } as React.CSSProperties}
-          />
-        )}
-        <span className="relative z-10 flex items-center gap-2">
-          <Sparkles size={14} aria-hidden="true" />
-          Web Design Services
-        </span>
-      </Link>
-    </motion.div>
+        <Link
+          to="/web-design"
+          onClick={onClick}
+          aria-label="Web Design Services - Need a website that converts?"
+          aria-describedby={showTooltip && hovered ? 'wd-tooltip' : undefined}
+          className="inline-flex font-sans font-semibold text-[13px]"
+          style={{
+            height,
+            paddingLeft: px,
+            paddingRight: px,
+            borderRadius: 10,
+            background: 'transparent',
+            border: '1px solid rgba(59,130,246,0.35)',
+            position: 'relative',
+            overflow: 'hidden',
+            color: hovered ? '#93C5FD' : '#F8FAFC',
+            transition: 'color 0.2s',
+            width: fullWidth ? '100%' : undefined,
+            justifyContent: fullWidth ? 'center' : undefined,
+          }}
+        >
+          {!prefersReduced && (
+            <span
+              ref={shineRef}
+              className="pointer-events-none absolute inset-0 rounded-[inherit]"
+              style={{
+                padding: '1px',
+                background: 'radial-gradient(transparent, transparent, rgba(96,165,250,0.6), rgba(147,197,253,0.5), transparent, transparent)',
+                backgroundSize: '300% 300%',
+                animationName: 'shine',
+                animationDuration: '3s',
+                animationTimingFunction: 'linear',
+                animationIterationCount: 'infinite',
+                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMaskComposite: 'xor',
+                maskComposite: 'exclude',
+              } as React.CSSProperties}
+            />
+          )}
+          <span className="relative z-10 flex items-center gap-2">
+            <Sparkles size={14} aria-hidden="true" />
+            {/* Shorter label on tablet, full on desktop */}
+            <span className="hidden lg:inline">Web Design Services</span>
+            <span className="lg:hidden">Web Design</span>
+          </span>
+        </Link>
+      </motion.div>
+
+      {/* Tooltip — desktop only, no tooltip prop when in mobile drawer */}
+      {showTooltip && (
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              id="wd-tooltip"
+              role="tooltip"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="pointer-events-none"
+              style={{
+                position: 'absolute',
+                top: 'calc(100% + 8px)',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 100,
+              }}
+            >
+              {/* Triangle */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -6,
+                  left: '50%',
+                  transform: 'translateX(-50%) rotate(45deg)',
+                  width: 12,
+                  height: 12,
+                  background: '#0f1117',
+                  borderLeft: '1px solid #1e2235',
+                  borderTop: '1px solid #1e2235',
+                }}
+              />
+              {/* Body */}
+              <div
+                style={{
+                  background: '#0f1117',
+                  border: '1px solid #1e2235',
+                  borderTop: '2px solid #3B82F6',
+                  borderRadius: 12,
+                  padding: '10px 12px',
+                  maxWidth: 200,
+                }}
+              >
+                <p className="font-sans font-semibold text-sm text-[#F8FAFC]">Need a website?</p>
+                <p className="font-sans text-xs text-[#94A3B8] mt-0.5">Built to convert your ad traffic into sales.</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
+    </div>
   )
 }
 
@@ -122,8 +203,15 @@ export function Navbar() {
           </ul>
 
           <div className="hidden md:flex items-center gap-3">
-            <WebDesignBtn />
-            <Button variant="primary" size="sm" onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}>
+            {/* showTooltip only on desktop — overflow visible needed on parent */}
+            <div style={{ overflow: 'visible' }}>
+              <WebDesignBtn showTooltip />
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               Apply to work with us
             </Button>
           </div>
@@ -184,6 +272,7 @@ export function Navbar() {
               </ul>
 
               <div className="flex flex-col gap-3 mt-auto">
+                {/* No tooltip in mobile drawer */}
                 <WebDesignBtn fullWidth size="md" onClick={() => setMobileOpen(false)} />
                 <Button variant="primary" size="md" className="w-full" onClick={() => setMobileOpen(false)}>
                   Apply to work with us
