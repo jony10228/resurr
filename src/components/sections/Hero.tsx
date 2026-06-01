@@ -7,6 +7,7 @@ import {
   useInView,
 } from 'framer-motion'
 import { ArrowRight, CheckCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { GradientText } from '@/components/ui/GradientText'
@@ -320,6 +321,24 @@ export function Hero() {
           transition={{ duration: 0.7, ease: EASE, delay: 0.9 }}
         >
           {METRICS.map((m) => <MetricCard key={m.label} {...m} />)}
+        </motion.div>
+
+        {/* Web Design link */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+          className="mt-8"
+        >
+          <span className="font-mono text-xs text-[#475569]">
+            Also building websites that convert?{' '}
+          </span>
+          <Link
+            to="/web-design"
+            className="font-mono text-xs text-[#3B82F6] hover:text-[#60A5FA] transition-colors inline-flex items-center gap-1"
+          >
+            See Web Design Services <ArrowRight size={11} />
+          </Link>
         </motion.div>
       </motion.div>
 

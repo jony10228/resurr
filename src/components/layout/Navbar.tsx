@@ -1,14 +1,58 @@
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/Button'
 
 const navLinks = [
-  { label: 'Results', href: '#proof' },
+  { label: 'Results',  href: '#proof' },
   { label: 'Services', href: '#services' },
-  { label: 'Process', href: '#process' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Process',  href: '#process' },
+  { label: 'FAQ',      href: '#faq' },
 ]
+
+const prefersReduced =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const glowAnim = prefersReduced
+  ? {}
+  : {
+      animate: {
+        boxShadow: [
+          '0 0 0 0 rgba(59,130,246,0.4)',
+          '0 0 24px 4px rgba(59,130,246,0.35)',
+          '0 0 0 0 rgba(59,130,246,0.4)',
+        ],
+      },
+      transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
+    }
+
+function WebDesignBtn({ fullWidth = false, onClick }: { fullWidth?: boolean; onClick?: () => void }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.97 }}
+      {...glowAnim}
+      style={{ borderRadius: 10, display: 'inline-flex', width: fullWidth ? '100%' : undefined }}
+    >
+      <Link
+        to="/web-design"
+        onClick={onClick}
+        className="inline-flex items-center gap-2 font-sans font-semibold text-[13px] text-white"
+        style={{
+          padding: '10px 20px',
+          borderRadius: 10,
+          background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+          width: fullWidth ? '100%' : undefined,
+          justifyContent: fullWidth ? 'center' : undefined,
+        }}
+      >
+        <Sparkles size={14} aria-hidden="true" />
+        Web Design Services
+      </Link>
+    </motion.div>
+  )
+}
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -34,9 +78,9 @@ export function Navbar() {
         }`}
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" aria-label="Main navigation">
-          <a href="#" className="font-display italic text-xl text-[#F8FAFC] flex items-center gap-1" aria-label="Resurrect Media home">
+          <Link to="/" className="font-display italic text-xl text-[#F8FAFC] flex items-center gap-1" aria-label="Resurrect Media home">
             Resurrect<span className="text-[#3B82F6]">.</span>Media
-          </a>
+          </Link>
 
           <ul className="hidden md:flex items-center gap-8" role="list">
             {navLinks.map((link) => (
@@ -52,12 +96,7 @@ export function Navbar() {
           </ul>
 
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => window.open('#apply', '_self')}>
-              Book a 15-min check
-            </Button>
-            <Button variant="primary" size="sm" onClick={() => window.open('#apply', '_self')}>
-              Apply to work with us
-            </Button>
+            <WebDesignBtn />
           </div>
 
           <button
@@ -89,9 +128,9 @@ export function Navbar() {
               className="fixed top-0 right-0 bottom-0 w-72 bg-[#0F1117] border-l border-[#1E2235] z-50 flex flex-col p-6 md:hidden"
             >
               <div className="flex justify-between items-center mb-10">
-                <span className="font-display italic text-lg text-[#F8FAFC]">
+                <Link to="/" className="font-display italic text-lg text-[#F8FAFC]" onClick={() => setMobileOpen(false)}>
                   Resurrect<span className="text-[#3B82F6]">.</span>Media
-                </span>
+                </Link>
                 <button
                   onClick={() => setMobileOpen(false)}
                   className="text-[#94A3B8] hover:text-[#F8FAFC]"
@@ -101,7 +140,7 @@ export function Navbar() {
                 </button>
               </div>
 
-              <ul className="flex flex-col gap-6 mb-10" role="list">
+              <ul className="flex flex-col gap-6 mb-6" role="list">
                 {navLinks.map((link) => (
                   <li key={link.label}>
                     <a
@@ -116,12 +155,7 @@ export function Navbar() {
               </ul>
 
               <div className="flex flex-col gap-3 mt-auto">
-                <Button variant="secondary" size="md" className="w-full" onClick={() => setMobileOpen(false)}>
-                  Book a 15-min check
-                </Button>
-                <Button variant="primary" size="md" className="w-full" onClick={() => setMobileOpen(false)}>
-                  Apply to work with us
-                </Button>
+                <WebDesignBtn fullWidth onClick={() => setMobileOpen(false)} />
               </div>
             </motion.div>
           </>
