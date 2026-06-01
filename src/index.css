@@ -1,0 +1,152 @@
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/500.css';
+@import '@fontsource/dm-sans/600.css';
+@import '@fontsource/dm-serif-display/400.css';
+@import '@fontsource/dm-serif-display/400-italic.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-bg: #0A0B0F;
+  --color-brand-surface: #0F1117;
+  --color-brand-elevated: #141720;
+  --color-brand-border: #1E2235;
+  --color-brand-blue: #3B82F6;
+  --color-brand-blue-light: #60A5FA;
+  --color-brand-blue-pale: #93C5FD;
+  --color-brand-white: #F8FAFC;
+  --color-brand-muted: #94A3B8;
+  --color-brand-ghost: #475569;
+  --color-brand-green: #22C55E;
+  --color-brand-red: #EF4444;
+
+  --font-display: "DM Serif Display", serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --shadow-glow-blue: 0 0 40px rgba(59, 130, 246, 0.15);
+  --shadow-glow-blue-lg: 0 0 80px rgba(59, 130, 246, 0.2);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.3);
+
+  --animate-pulse-slow: pulse 3s ease-in-out infinite;
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-fade-up: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-fade-in: fadeIn 0.5s ease forwards;
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  --animate-shine: shine 8s infinite linear;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: #0A0B0F;
+    color: #F8FAFC;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0A0B0F; }
+  ::-webkit-scrollbar-thumb { background: #1E2235; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+
+  ::selection { background: rgba(59, 130, 246, 0.3); color: #F8FAFC; }
+
+  :focus-visible { outline: 2px solid #3B82F6; outline-offset: 3px; border-radius: 4px; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  .grid-bg { /* intentionally empty — grid pattern removed */ }
+
+  .glow-text {
+    text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+
+  .font-display { font-family: 'DM Serif Display', serif; }
+  .font-mono    { font-family: 'JetBrains Mono', monospace; }
+
+  /* Required by shine-border.tsx */
+  .bg-shine-size { background-size: 300% 300%; }
+}
+
+/* 2-column CTA grid — responsive without relying on Tailwind scanning */
+.cta-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .cta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Shine border animation — global, no Tailwind dependency */
+@keyframes shine {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Badge pulse dot */
+@keyframes badgePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+.badge-dot {
+  animation: badgePulse 3s ease-in-out infinite;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #3B82F6;
+  color: #F8FAFC;
+  padding: 8px 16px;
+  z-index: 10000;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  border-radius: 0 0 4px 0;
+  transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
