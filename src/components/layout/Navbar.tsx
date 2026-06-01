@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Button } from '@/components/ui/Button'
 
 const navLinks = [
   { label: 'Results',  href: '#proof' },
@@ -19,15 +20,18 @@ const glowAnim = prefersReduced
   : {
       animate: {
         boxShadow: [
-          '0 0 0 0 rgba(59,130,246,0.4)',
-          '0 0 24px 4px rgba(59,130,246,0.35)',
-          '0 0 0 0 rgba(59,130,246,0.4)',
+          '0 0 8px rgba(59,130,246,0.2)',
+          '0 0 20px rgba(59,130,246,0.5)',
+          '0 0 8px rgba(59,130,246,0.2)',
         ],
       },
       transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
     }
 
-function WebDesignBtn({ fullWidth = false, onClick }: { fullWidth?: boolean; onClick?: () => void }) {
+function WebDesignBtn({ fullWidth = false, size = 'sm', onClick }: { fullWidth?: boolean; size?: 'sm' | 'md'; onClick?: () => void }) {
+  const height = size === 'md' ? 44 : 36
+  const px     = size === 'md' ? 24 : 16
+
   return (
     <motion.div
       whileHover={{ scale: 1.04 }}
@@ -38,17 +42,39 @@ function WebDesignBtn({ fullWidth = false, onClick }: { fullWidth?: boolean; onC
       <Link
         to="/web-design"
         onClick={onClick}
-        className="inline-flex items-center gap-2 font-sans font-semibold text-[13px] text-white"
+        className="inline-flex font-sans font-semibold text-[13px] text-white"
         style={{
-          padding: '10px 20px',
+          height,
+          paddingLeft: px,
+          paddingRight: px,
           borderRadius: 10,
-          background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+          background: 'transparent',
+          border: '1px solid rgba(59,130,246,0.6)',
+          position: 'relative',
+          overflow: 'hidden',
           width: fullWidth ? '100%' : undefined,
           justifyContent: fullWidth ? 'center' : undefined,
         }}
       >
-        <Sparkles size={14} aria-hidden="true" />
-        Web Design Services
+        {/* Shine border — borde de luz que recorre el contorno */}
+        {!prefersReduced && (
+          <span
+            className="pointer-events-none absolute inset-0 rounded-[inherit]"
+            style={{
+              padding: '1px',
+              background: 'radial-gradient(transparent, transparent, #60A5FA, #93C5FD, transparent, transparent)',
+              backgroundSize: '300% 300%',
+              animation: 'shine 3s linear infinite',
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+            } as React.CSSProperties}
+          />
+        )}
+        <span className="relative z-10 flex items-center gap-2">
+          <Sparkles size={14} aria-hidden="true" />
+          Web Design Services
+        </span>
       </Link>
     </motion.div>
   )
@@ -97,6 +123,9 @@ export function Navbar() {
 
           <div className="hidden md:flex items-center gap-3">
             <WebDesignBtn />
+            <Button variant="primary" size="sm" onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}>
+              Apply to work with us
+            </Button>
           </div>
 
           <button
@@ -155,7 +184,10 @@ export function Navbar() {
               </ul>
 
               <div className="flex flex-col gap-3 mt-auto">
-                <WebDesignBtn fullWidth onClick={() => setMobileOpen(false)} />
+                <WebDesignBtn fullWidth size="md" onClick={() => setMobileOpen(false)} />
+                <Button variant="primary" size="md" className="w-full" onClick={() => setMobileOpen(false)}>
+                  Apply to work with us
+                </Button>
               </div>
             </motion.div>
           </>
