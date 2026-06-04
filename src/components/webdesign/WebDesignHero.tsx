@@ -4,6 +4,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
+  type MotionValue,
 } from 'framer-motion'
 import { Zap, Clock, TrendingUp } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
@@ -27,8 +28,8 @@ interface MetricCardProps {
   floatDuration: number
   floatAmount: number
   style?: React.CSSProperties
-  parallaxX: ReturnType<typeof useTransform>
-  parallaxY: ReturnType<typeof useTransform>
+  parallaxX: MotionValue<number>
+  parallaxY: MotionValue<number>
 }
 
 function MetricCard({
@@ -51,15 +52,15 @@ function MetricCard({
           <div
             style={{
               background: 'rgba(15,17,23,0.92)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              border: '1px solid #1e2235',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(59,130,246,0.2)',
               borderRadius: 12,
               padding: '10px 14px',
               display: 'flex',
               alignItems: 'center',
               gap: 10,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 15px rgba(59,130,246,0.1)',
               whiteSpace: 'nowrap',
             }}
           >
@@ -97,31 +98,50 @@ function MetricCard({
 function MonitorMockup({
   rotateX, rotateY, cardParallaxX, cardParallaxY, mobile,
 }: {
-  rotateX: ReturnType<typeof useTransform>
-  rotateY: ReturnType<typeof useTransform>
-  cardParallaxX: ReturnType<typeof useTransform>
-  cardParallaxY: ReturnType<typeof useTransform>
+  rotateX: MotionValue<number>
+  rotateY: MotionValue<number>
+  cardParallaxX: MotionValue<number>
+  cardParallaxY: MotionValue<number>
   mobile: boolean
 }) {
   return (
     <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
 
-      {/* Glow behind monitor */}
+      {/* Glow behind monitor — difuso */}
       <motion.div
         style={{
           position: 'absolute',
           bottom: 10,
           left: '50%',
           transform: 'translateX(-50%)',
-          width: 400,
-          height: 280,
+          width: 450,
+          height: 300,
           borderRadius: '50%',
-          background: 'radial-gradient(ellipse, rgba(59,130,246,0.30), transparent 65%)',
-          filter: 'blur(70px)',
+          background: 'radial-gradient(ellipse, rgba(59,130,246,0.35), transparent 65%)',
+          filter: 'blur(80px)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
-        animate={{ opacity: [0.4, 0.85, 0.4] }}
+        animate={{ opacity: [0.4, 0.9, 0.4], scale: [1, 1.05, 1] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Glow behind monitor — intenso pequeño */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          bottom: 40,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 250,
+          height: 180,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.5), transparent 60%)',
+          filter: 'blur(50px)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+        animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.04, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       />
 
@@ -158,7 +178,7 @@ function MonitorMockup({
                 borderBottom: 'none',
                 overflow: 'hidden',
                 position: 'relative',
-                boxShadow: '0 0 100px rgba(59,130,246,0.2), 0 60px 120px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+                boxShadow: '0 0 80px rgba(59,130,246,0.25), 0 0 160px rgba(59,130,246,0.1), 0 60px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)',
               }}
             >
               {/* Browser bar */}
@@ -247,7 +267,7 @@ function MonitorMockup({
                   iconColor="#22C55E"
                   delay={1.0}
                   floatDuration={5}
-                  floatAmount={6}
+                  floatAmount={8}
                   parallaxX={cardParallaxX}
                   parallaxY={cardParallaxY}
                   style={{ top: 40, left: -20 }}
@@ -259,7 +279,7 @@ function MonitorMockup({
                   iconColor="#3B82F6"
                   delay={1.3}
                   floatDuration={7}
-                  floatAmount={8}
+                  floatAmount={6}
                   parallaxX={cardParallaxX}
                   parallaxY={cardParallaxY}
                   style={{ top: '45%', right: -24, transform: 'translateY(-50%)' }}
@@ -271,7 +291,7 @@ function MonitorMockup({
                   iconColor="#60A5FA"
                   delay={1.6}
                   floatDuration={6}
-                  floatAmount={5}
+                  floatAmount={10}
                   parallaxX={cardParallaxX}
                   parallaxY={cardParallaxY}
                   style={{ bottom: 50, left: -10 }}
@@ -368,17 +388,65 @@ export function WebDesignHero() {
       ref={sectionRef}
       onMouseMove={onMouseMove}
       className="relative overflow-hidden pt-16"
-      style={{ background: '#0A0B0F', minHeight: '100vh' }}
+      style={{ minHeight: '100vh' }}
     >
+      {/* NEW 1 — Aurora fuerte */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: '-40%',
+          background: 'radial-gradient(ellipse 40% 50% at 25% 35%, rgba(59,130,246,0.45), transparent 60%), radial-gradient(ellipse 45% 55% at 75% 55%, rgba(99,179,237,0.35), transparent 60%)',
+          filter: 'blur(30px)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+        animate={{ x: ['0%', '3%', '-2%', '0%'], y: ['0%', '-2%', '2%', '0%'] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* NEW 2 — Grid técnico animado */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'linear-gradient(rgba(59,130,246,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.12) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 60% 40%, black 20%, transparent 75%)',
+          maskImage: 'radial-gradient(ellipse 80% 70% at 60% 40%, black 20%, transparent 75%)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+        animate={{ backgroundPosition: ['0px 0px', '48px 48px'] }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+      />
+
+      {/* NEW 3 — Glow grande detrás del monitor */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          top: '35%',
+          right: '10%',
+          width: '500px',
+          height: '350px',
+          background: 'radial-gradient(ellipse, rgba(59,130,246,0.50), transparent 65%)',
+          filter: 'blur(60px)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+        animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.06, 1] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
       {/* CAPA 1 — Aurora */}
       <motion.div
         className="absolute pointer-events-none"
         style={{
           inset: '-40%',
+          zIndex: 0,
           background: [
-            'radial-gradient(ellipse 35% 45% at 25% 35%, rgba(59,130,246,0.22), transparent 60%)',
-            'radial-gradient(ellipse 40% 50% at 75% 55%, rgba(99,179,237,0.15), transparent 60%)',
-            'radial-gradient(ellipse 30% 40% at 50% 50%, rgba(37,99,235,0.12), transparent 60%)',
+            'radial-gradient(ellipse 35% 45% at 25% 35%, rgba(59,130,246,0.25), transparent 60%)',
+            'radial-gradient(ellipse 40% 50% at 75% 55%, rgba(99,179,237,0.18), transparent 60%)',
+            'radial-gradient(ellipse 30% 40% at 50% 50%, rgba(37,99,235,0.14), transparent 60%)',
           ].join(','),
           filter: 'blur(50px)',
         }}
@@ -391,15 +459,15 @@ export function WebDesignHero() {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: [
-            'linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px)',
-            'linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px)',
+            'linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)',
           ].join(','),
           backgroundSize: '48px 48px',
-          maskImage: 'radial-gradient(ellipse 80% 70% at 50% 45%, black 25%, transparent 78%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 45%, black 25%, transparent 78%)',
+          maskImage: 'radial-gradient(ellipse 80% 70% at 60% 40%, black 20%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 60% 40%, black 20%, transparent 75%)',
         }}
         animate={reduced ? {} : { backgroundPosition: ['0px 0px', '48px 48px'] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* CAPA 3 — Glow central */}

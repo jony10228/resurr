@@ -73,9 +73,8 @@ function MetricCard({ target, decimals, prefix = '', suffix = '', label, barPerc
 }
 
 const METRICS: MetricData[] = [
-  { target: 15.0, decimals: 1, suffix: 'M+', label: 'Views on creatives', barPercent: 90 },
   { target: 8,    decimals: 0, prefix: '$',  label: 'Cost per lead',       barPercent: 65 },
-  { target: 9,    decimals: 0, suffix: 'x',  label: 'ROAS delivered',      barPercent: 85 },
+  { target: 15,   decimals: 0, suffix: 'x',  label: 'ROAS delivered',      barPercent: 85 },
 ]
 
 export function Hero() {
